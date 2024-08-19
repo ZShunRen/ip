@@ -1,10 +1,24 @@
-public class Task {
+public abstract class Task {
     private boolean isDone;
-    private String taskName;
+    private String taskDescription;
 
-    public Task(String taskName) {
-        this.taskName = taskName;
+    protected String taskType;
+
+    private Task(String taskDescription) {
+        this.taskDescription = taskDescription;
         this.isDone = false;
+    };
+
+    public static Task createTask(String taskDescription) {
+        return new ToDo(taskDescription);
+    };
+
+    public static Task createTask(String taskDescription, String deadlineTiming) {
+        return new Deadline(taskDescription, deadlineTiming);
+    };
+
+    public static Task createTask(String taskDescription, String fromTiming, String toTiming) {
+        return new Event(taskDescription, fromTiming, toTiming);
     };
 
     public void markAsDone() {
@@ -18,6 +32,6 @@ public class Task {
     @Override
     public String toString() {
         String marker = this.isDone ? "X" : " ";
-        return String.format("[%s] %s", marker, this.taskName);
+        return String.format("[%s][%s] %s",this.taskType, marker, this.taskDescription);
     };
 }
