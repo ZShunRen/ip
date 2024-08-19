@@ -4,7 +4,7 @@ public abstract class Task {
 
     protected String taskType;
 
-    private Task(String taskDescription) {
+    protected Task(String taskDescription) {
         this.taskDescription = taskDescription;
         this.isDone = false;
     };
