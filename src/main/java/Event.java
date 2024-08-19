@@ -5,7 +5,7 @@ public class Event extends Task {
         super(taskDescription);
         this.fromTiming = fromTiming;
         this.toTiming = toTiming;
-        this.taskType = "Event";
+        this.taskType = "E";
     };
 
     @Override

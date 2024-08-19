@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -37,19 +38,28 @@ public class Ned {
         //adds indentation to any printed lines
         System.out.println(Ned.indentations + line);
     }
-
     private static boolean isMarkCommand(String input) {
         //if it is, it executes the command
-        if (Pattern.matches("mark [0-9]+\\s*$", input)) {
-            executeMarkOrUnmarkCommand(true, input);
-            return true;
-        } else if (Pattern.matches("unmark [0-9]+\\s*$", input)) {
-            executeMarkOrUnmarkCommand(false, input);
-            return true;
-        } else {
-            return false;
-        }
+        return (Pattern.matches("mark [0-9]+\\s*$", input));
     };
+    private static boolean isUnMarkCommand(String input) {
+        return (Pattern.matches("unmark [0-9]+\\s*$", input));
+    };
+    private static boolean isToDoCommand(String input) {
+        return (Pattern.matches("todo .+\\s*$", input));
+    };
+    private static boolean isDeadlineCommand(String input) {
+        return (Pattern.matches("deadline .+ /by .+\\s*$", input));
+    };
+
+    private static boolean isEventCommand(String input) {
+        return (Pattern.matches("event .+ /from .+ /to .+\\s*$", input));
+    };
+
+    private static boolean isTaskCommandType(String input) {
+        return isToDoCommand(input) || isDeadlineCommand(input) || isEventCommand(input);
+    };
+
     private static void executeMarkOrUnmarkCommand(boolean isMarkCommand, String input) {
         String[] words = input.split(" ");
         String possibleIndex = words[1];
@@ -93,10 +103,35 @@ public class Ned {
                     print(task);
                 };
                 print("____________________________________________________________\n");
-            } else if (!isMarkCommand(nextInput)) {
+            } else if (isMarkCommand(nextInput)) {
+                executeMarkOrUnmarkCommand(true, nextInput);
+            } else if (isUnMarkCommand(nextInput)) {
+                executeMarkOrUnmarkCommand(false, nextInput);
+            } else if (isTaskCommandType(nextInput)) {
+                Task newTask;
+                if (isToDoCommand(nextInput)) {
+                    String[] parsed_inputs = nextInput.split("todo", 2);
+                    //the string is split at most limit - 1 times
+//                    System.out.println(Arrays.toString(parsed_inputs));
+                    newTask = Task.createTask(parsed_inputs[1].strip());
+                } else if (isDeadlineCommand(nextInput)) {
+                    String[] parsed_inputs = nextInput.split("deadline|/by", 3);
+//                    System.out.println(Arrays.toString(parsed_inputs));
+                    newTask = Task.createTask(parsed_inputs[1].strip(), parsed_inputs[2].strip());
+                } else {
+                    String[] parsed_inputs = nextInput.split("event|/from|/to", 4);
+                    newTask = Task.createTask(parsed_inputs[1].strip(), parsed_inputs[2].strip(), parsed_inputs[3].strip());
+                };
+                Ned.listOfText.add(newTask);
+                print("____________________________________________________________\n");
+                print("Aye, I've added this task m'lord:");
+                print(Ned.indentations  + newTask);
+                print(String.format("Now you've %d tasks in the list. Get to it then.", Ned.listOfText.size()));
+                print("____________________________________________________________\n");
+            } else {
                 System.out.println(Ned.indentations + "____________________________________________________________\n");
                 System.out.println(Ned.indentations + "added: " + nextInput + "\n");
-                Task newTask = new Task(nextInput);
+                Task newTask = Task.createTask(nextInput); //creates a ToDo by default
                 Ned.listOfText.add(newTask);
                 System.out.println(Ned.indentations + "____________________________________________________________\n");
             }
