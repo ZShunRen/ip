@@ -40,28 +40,90 @@ public class Ned {
     }
     private static boolean isMarkCommand(String input) {
         //if it is, it executes the command
-        return (Pattern.matches("mark [0-9]+\\s*$", input));
+        return (Pattern.matches("mark.*", input));
     };
     private static boolean isUnMarkCommand(String input) {
-        return (Pattern.matches("unmark [0-9]+\\s*$", input));
+        return (Pattern.matches("unmark.*", input));
     };
     private static boolean isToDoCommand(String input) {
-        return (Pattern.matches("todo .+\\s*$", input));
+        return (Pattern.matches("todo.*", input));
     };
     private static boolean isDeadlineCommand(String input) {
-        return (Pattern.matches("deadline .+ /by .+\\s*$", input));
+        return (Pattern.matches("deadline.*", input));
     };
 
     private static boolean isEventCommand(String input) {
-        return (Pattern.matches("event .+ /from .+ /to .+\\s*$", input));
+        return (Pattern.matches("event.*", input));
     };
 
     private static boolean isTaskCommandType(String input) {
         return isToDoCommand(input) || isDeadlineCommand(input) || isEventCommand(input);
     };
 
-    private static void executeMarkOrUnmarkCommand(boolean isMarkCommand, String input) {
+    private static int getTaskCommandType(String input) {
+        if (isToDoCommand(input)) return 1;
+        else if (isDeadlineCommand(input)) return 2;
+        else if (isEventCommand(input)) return 3;
+        else return -1; //for event commands
+    };
+    private static int checkSizeOfInput(String[] strArr) {
+        int count = 0;
+        for (String s : strArr) {
+            if (!s.isBlank())  {
+                count += 1;
+            }
+        }
+        ;
+        return count;
+    }
+    private static void executeTaskCommand(String input) throws NedException {
+        Task newTask;
+        String[] parsed_inputs;
+        newTask = switch (getTaskCommandType(input)) {
+            case 1 -> {
+                parsed_inputs = input.split("todo", 2);
+                if (parsed_inputs[1].strip().isBlank()) {
+                    throw new NedException("M'lord, you cannot create a todo task with no description");
+                };
+                yield Task.createTask(parsed_inputs[1].strip());
+            }
+            case 2 -> {
+                parsed_inputs = input.split("deadline|/by", 3);
+                int parsed_inputs_len = checkSizeOfInput(parsed_inputs);
+                if (parsed_inputs[1].strip().isBlank()) {
+                    throw new NedException("M'lord, you cannot create a deadline task with no description");
+                } else if (parsed_inputs_len == 1) {
+                    throw new NedException("M'lord, you cannot create a deadline task with no due date");
+                };
+                yield Task.createTask(parsed_inputs[1].strip(), parsed_inputs[2].strip());
+            }
+            case 3 -> {
+                parsed_inputs = input.split("event|/from|/to", 4);
+                int parsed_inputs_len = checkSizeOfInput(parsed_inputs);
+
+                if (parsed_inputs[1].strip().isBlank()) {
+                    throw new NedException("M'lord, you cannot create an event task with no description");
+                } else if (parsed_inputs_len == 2 ) {
+                    throw new NedException("M'lord, you cannot create an event task with no 'from' date " +
+                            "or no 'to' date. Gods be good, fill both up!");
+                }
+                yield Task.createTask(parsed_inputs[1].strip(), parsed_inputs[2].strip(), parsed_inputs[3].strip());
+            }
+            //unchecked exception thrown, does not have to be caught
+            default -> throw new IllegalStateException("Unexpected task command: " + getTaskCommandType(input));
+        };
+        Ned.listOfText.add(newTask);
+        print("____________________________________________________________\n");
+        print("Aye, I've added this task m'lord:");
+        print(Ned.indentations  + newTask);
+        print(String.format("Now you've %d tasks in the list. Get to it then.", Ned.listOfText.size()));
+        print("____________________________________________________________\n");
+    }
+    private static void executeMarkOrUnmarkCommand(boolean isMarkCommand, String input) throws NedException {
         String[] words = input.split(" ");
+        if (words.length != 2) {
+            throw new NedException("Sorry m'lord, you must give me a list index with the mark/unmark command. No more, no less");
+        };
         String possibleIndex = words[1];
         try {
             int index = Integer.parseInt(possibleIndex);
@@ -79,8 +141,9 @@ public class Ned {
             print("Sorry m'lord, seems there was a typo in the command try again.");
             print("____________________________________________________________\n");
         } catch (NumberFormatException e) {
+            //never executed because of regex
             print("____________________________________________________________\n");
-            print("Sorry m'lord, seems you did not specify a valid number");
+            print("Sorry m'lord, your command must specify a valid number");
             print("____________________________________________________________\n");
         } catch (IndexOutOfBoundsException e) {
             print("____________________________________________________________\n");
@@ -104,36 +167,32 @@ public class Ned {
                 };
                 print("____________________________________________________________\n");
             } else if (isMarkCommand(nextInput)) {
-                executeMarkOrUnmarkCommand(true, nextInput);
+                try {
+                    executeMarkOrUnmarkCommand(true, nextInput);
+                } catch (NedException e) {
+                    print("____________________________________________________________\n");
+                    print(e.getMessage());
+                    print("____________________________________________________________\n");
+                }
             } else if (isUnMarkCommand(nextInput)) {
-                executeMarkOrUnmarkCommand(false, nextInput);
+                try {
+                    executeMarkOrUnmarkCommand(false, nextInput);
+                } catch (NedException e) {
+                    print("____________________________________________________________\n");
+                    print(e.getMessage());
+                    print("____________________________________________________________\n");
+                }
             } else if (isTaskCommandType(nextInput)) {
-                Task newTask;
-                if (isToDoCommand(nextInput)) {
-                    String[] parsed_inputs = nextInput.split("todo", 2);
-                    //the string is split at most limit - 1 times
-//                    System.out.println(Arrays.toString(parsed_inputs));
-                    newTask = Task.createTask(parsed_inputs[1].strip());
-                } else if (isDeadlineCommand(nextInput)) {
-                    String[] parsed_inputs = nextInput.split("deadline|/by", 3);
-//                    System.out.println(Arrays.toString(parsed_inputs));
-                    newTask = Task.createTask(parsed_inputs[1].strip(), parsed_inputs[2].strip());
-                } else {
-                    String[] parsed_inputs = nextInput.split("event|/from|/to", 4);
-                    newTask = Task.createTask(parsed_inputs[1].strip(), parsed_inputs[2].strip(), parsed_inputs[3].strip());
-                };
-                Ned.listOfText.add(newTask);
-                print("____________________________________________________________\n");
-                print("Aye, I've added this task m'lord:");
-                print(Ned.indentations  + newTask);
-                print(String.format("Now you've %d tasks in the list. Get to it then.", Ned.listOfText.size()));
-                print("____________________________________________________________\n");
+               try {
+                   executeTaskCommand(nextInput);
+               } catch (NedException e) {
+                   print(e.getMessage());
+               }
             } else {
-                System.out.println(Ned.indentations + "____________________________________________________________\n");
-                System.out.println(Ned.indentations + "added: " + nextInput + "\n");
-                Task newTask = Task.createTask(nextInput); //creates a ToDo by default
-                Ned.listOfText.add(newTask);
-                System.out.println(Ned.indentations + "____________________________________________________________\n");
+                print("____________________________________________________________\n");
+                print("M'lord, you seem to have given me a nonsensical command. Input a correct command, for we have little time!");
+                print("Winter is coming...");
+                print("____________________________________________________________\n");
             }
         }
     };
