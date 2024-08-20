@@ -23,16 +23,13 @@ public class Ned {
     }
 
     public static void welcomeMessage() {
-        System.out.println(Ned.indentations + "____________________________________________________________\n");
         System.out.println(Ned.indentations + "Hello! I'm\n" + logo + "\n");
         System.out.println(Ned.indentations +  "Lord of Winterfell and Warden Of The North\n");
         System.out.println(Ned.indentations + "What can I do for you?");
     };
 
     public static void byeMessage() {
-        System.out.println(Ned.indentations + "____________________________________________________________\n");
         System.out.println(Ned.indentations + "I wish you good fortune in the wars to come, m' lord\n");
-        System.out.println(Ned.indentations + "____________________________________________________________\n");
     }
     public static void print(String line) {
         //adds indentation to any printed lines
@@ -117,11 +114,9 @@ public class Ned {
             default -> throw new IllegalStateException("Unexpected task command: " + getTaskCommandType(input));
         };
         Ned.listOfText.add(newTask);
-        print("____________________________________________________________\n");
         print("Aye, I've added this task m'lord:");
         print(Ned.indentations  + newTask);
         print(String.format("Now you've %d tasks in the list. Get to it then.", Ned.listOfText.size()));
-        print("____________________________________________________________\n");
     }
     private static void executeMarkOrUnmarkCommand(boolean isMarkCommand, String input) throws NedException {
         String[] words = input.split(" ");
@@ -141,18 +136,12 @@ public class Ned {
             };
             print(selectedTask.toString());
         } catch (PatternSyntaxException e) {
-            print("____________________________________________________________\n");
             print("Sorry m'lord, seems there was a typo in the command try again.");
-            print("____________________________________________________________\n");
         } catch (NumberFormatException e) {
             //never executed because of regex
-            print("____________________________________________________________\n");
             print("Sorry m'lord, your command must specify a valid number");
-            print("____________________________________________________________\n");
         } catch (IndexOutOfBoundsException e) {
-            print("____________________________________________________________\n");
             print("Sorry m'lord, seems the item number you specified is not valid");
-            print("____________________________________________________________\n");
         }
     };
     private static void executeDeleteCommand(String input) throws NedException {
@@ -164,25 +153,18 @@ public class Ned {
             try {
                 int index = Integer.parseInt(possibleIndex) - 1;
                 Task selectedTask = Ned.listOfText.get(index);
-                print("____________________________________________________________\n");
                 print("Noted m'lord. The following task has been removed:\n");
                 print(Ned.indentations + selectedTask);
                 Ned.listOfText.remove(index); //removes the index specified
                 print(String.format("Now you've %d tasks in the list. Get to it then.", Ned.listOfText.size()));
-                print("____________________________________________________________\n");
             } catch (NumberFormatException e) {
-                print("____________________________________________________________\n");
                 print("Sorry m'lord, your command must specify a valid number");
-                print("____________________________________________________________\n");
             } catch (IndexOutOfBoundsException e) {
-                print("____________________________________________________________\n");
                 print("Sorry m'lord, seems the item number you specified is not valid");
-                print("____________________________________________________________\n");
             }
         }
     };
     private static void addCommands() {
-        print("____________________________________________________________\n");
         System.out.println("\n");
         Scanner inputDetector = new Scanner(System.in);
         while (true) {
@@ -190,27 +172,21 @@ public class Ned {
             if (nextInput.equalsIgnoreCase(Ned.byeflag)) {
                 break;
             } else if (nextInput.equalsIgnoreCase("list")) {
-                print("____________________________________________________________\n");
                 for (int i = 0; i < Ned.listOfText.size(); i++) {
                     String task = Ned.indentations + String.format("%d.%s \n", i + 1, Ned.listOfText.get(i));
                     print(task);
                 };
-                print("____________________________________________________________\n");
             } else if (isMarkCommand(nextInput)) {
                 try {
                     executeMarkOrUnmarkCommand(true, nextInput);
                 } catch (NedException e) {
-                    print("____________________________________________________________\n");
                     print(e.getMessage());
-                    print("____________________________________________________________\n");
                 }
             } else if (isUnMarkCommand(nextInput)) {
                 try {
                     executeMarkOrUnmarkCommand(false, nextInput);
                 } catch (NedException e) {
-                    print("____________________________________________________________\n");
                     print(e.getMessage());
-                    print("____________________________________________________________\n");
                 }
             } else if (isTaskCommandType(nextInput)) {
                 try {
@@ -222,15 +198,11 @@ public class Ned {
                 try {
                     executeDeleteCommand(nextInput);
                 } catch (NedException e) {
-                    print("____________________________________________________________\n");
                     print(e.getMessage());
-                    print("____________________________________________________________\n");
                 }
             } else {
-                print("____________________________________________________________\n");
                 print("M'lord, you seem to have given me a nonsensical command. Input a correct command, for we have little time!");
                 print("Winter is coming...");
-                print("____________________________________________________________\n");
             }
         }
     };
