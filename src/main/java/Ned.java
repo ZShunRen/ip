@@ -59,6 +59,10 @@ public class Ned {
     private static boolean isTaskCommandType(String input) {
         return isToDoCommand(input) || isDeadlineCommand(input) || isEventCommand(input);
     };
+    private static boolean isDeleteCommand(String input) {
+        //if it is, it executes the command
+        return (Pattern.matches("delete.*", input));
+    };
 
     private static int getTaskCommandType(String input) {
         if (isToDoCommand(input)) return 1;
@@ -150,8 +154,34 @@ public class Ned {
             print("Sorry m'lord, seems the item number you specified is not valid");
             print("____________________________________________________________\n");
         }
-    }
-    public static void addCommands() {
+    };
+    private static void executeDeleteCommand(String input) throws NedException {
+        String[] words = input.split(" ");
+        if (words.length != 2) {
+            throw new NedException("Sorry m'lord, you must give me a list index with the delete command. No more, no less");
+        } else {
+            String possibleIndex = words[1];
+            try {
+                int index = Integer.parseInt(possibleIndex) - 1;
+                Task selectedTask = Ned.listOfText.get(index);
+                print("____________________________________________________________\n");
+                print("Noted m'lord. The following task has been removed:\n");
+                print(Ned.indentations + selectedTask);
+                Ned.listOfText.remove(index); //removes the index specified
+                print(String.format("Now you've %d tasks in the list. Get to it then.", Ned.listOfText.size()));
+                print("____________________________________________________________\n");
+            } catch (NumberFormatException e) {
+                print("____________________________________________________________\n");
+                print("Sorry m'lord, your command must specify a valid number");
+                print("____________________________________________________________\n");
+            } catch (IndexOutOfBoundsException e) {
+                print("____________________________________________________________\n");
+                print("Sorry m'lord, seems the item number you specified is not valid");
+                print("____________________________________________________________\n");
+            }
+        }
+    };
+    private static void addCommands() {
         print("____________________________________________________________\n");
         System.out.println("\n");
         Scanner inputDetector = new Scanner(System.in);
@@ -183,11 +213,19 @@ public class Ned {
                     print("____________________________________________________________\n");
                 }
             } else if (isTaskCommandType(nextInput)) {
-               try {
-                   executeTaskCommand(nextInput);
-               } catch (NedException e) {
-                   print(e.getMessage());
-               }
+                try {
+                    executeTaskCommand(nextInput);
+                } catch (NedException e) {
+                    print(e.getMessage());
+                }
+            } else if (isDeleteCommand(nextInput)) {
+                try {
+                    executeDeleteCommand(nextInput);
+                } catch (NedException e) {
+                    print("____________________________________________________________\n");
+                    print(e.getMessage());
+                    print("____________________________________________________________\n");
+                }
             } else {
                 print("____________________________________________________________\n");
                 print("M'lord, you seem to have given me a nonsensical command. Input a correct command, for we have little time!");
