@@ -1,7 +1,5 @@
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -18,7 +16,7 @@ public class Ned {
                 + Ned.indentations + "|_____|\\____|'.__.' '.__.;__]";
     public static void main(String[] args) {
         Ned.welcomeMessage();
-        Ned.addCommands();
+        Ned.checkCommands();
         Ned.byeMessage();
     }
 
@@ -101,13 +99,12 @@ public class Ned {
             case 3 -> {
                 parsed_inputs = input.split("event|/from|/to", 4);
                 int parsed_inputs_len = checkSizeOfInput(parsed_inputs);
-
                 if (parsed_inputs[1].strip().isBlank()) {
                     throw new NedException("M'lord, you cannot create an event task with no description");
-                } else if (parsed_inputs_len == 2 ) {
+                } else if (parsed_inputs_len <= 2 ) {
                     throw new NedException("M'lord, you cannot create an event task with no 'from' date " +
                             "or no 'to' date. Gods be good, fill both up!");
-                }
+                };
                 yield Task.createTask(parsed_inputs[1].strip(), parsed_inputs[2].strip(), parsed_inputs[3].strip());
             }
             //unchecked exception thrown, does not have to be caught
@@ -117,7 +114,7 @@ public class Ned {
         print("Aye, I've added this task m'lord:");
         print(Ned.indentations  + newTask);
         print(String.format("Now you've %d tasks in the list. Get to it then.", Ned.listOfText.size()));
-    }
+    };
     private static void executeMarkOrUnmarkCommand(boolean isMarkCommand, String input) throws NedException {
         String[] words = input.split(" ");
         if (words.length != 2) {
@@ -164,7 +161,7 @@ public class Ned {
             }
         }
     };
-    private static void addCommands() {
+    private static void checkCommands() {
         System.out.println("\n");
         Scanner inputDetector = new Scanner(System.in);
         while (true) {

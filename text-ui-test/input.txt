@@ -1,0 +1,15 @@
+nonsensical command
+todo read book to sleep
+todo
+deadline
+deadline /by May
+deadline Hand in work
+deadline do homework /by Friday
+event
+event do homework
+event do homework /from
+event do homework /from Monday 3pm
+event do homework /to
+event do homework /to Monday 6pm
+event do homework /from Monday 3pm /to Monday 6pm
+bye

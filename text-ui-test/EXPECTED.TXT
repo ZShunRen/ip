@@ -1,5 +1,3 @@
-    ____________________________________________________________
-
     Hello! I'm
      ____  _____              __
     |_   \|_   _|            |  ]
@@ -11,7 +9,28 @@
     Lord of Winterfell and Warden Of The North
 
     What can I do for you?
-    ____________________________________________________________
 
 
+    M'lord, you seem to have given me a nonsensical command. Input a correct command, for we have little time!
+    Winter is coming...
+    Aye, I've added this task m'lord:
+        [T][ ] read book to sleep
+    Now you've 1 tasks in the list. Get to it then.
+    M'lord, you cannot create a todo task with no description
+    M'lord, you cannot create a deadline task with no description
+    M'lord, you cannot create a deadline task with no description
+    M'lord, you cannot create a deadline task with no due date
+    Aye, I've added this task m'lord:
+        [D][ ] do homework (by: Friday)
+    Now you've 2 tasks in the list. Get to it then.
+    M'lord, you cannot create an event task with no description
+    M'lord, you cannot create an event task with no 'from' date or no 'to' date. Gods be good, fill both up!
+    M'lord, you cannot create an event task with no 'from' date or no 'to' date. Gods be good, fill both up!
+    M'lord, you cannot create an event task with no 'from' date or no 'to' date. Gods be good, fill both up!
+    M'lord, you cannot create an event task with no 'from' date or no 'to' date. Gods be good, fill both up!
+    M'lord, you cannot create an event task with no 'from' date or no 'to' date. Gods be good, fill both up!
+    Aye, I've added this task m'lord:
+        [E][ ] do homework (from: Monday 3pm to: Monday 6pm)
+    Now you've 3 tasks in the list. Get to it then.
+    I wish you good fortune in the wars to come, m' lord
 
