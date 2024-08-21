@@ -8,11 +8,14 @@ public class ToDo extends Task {
         this.taskType = "T";
     };
 
-    public static Task createTask(String input) throws NedException {
+    public static void addTask(String input, ArrayList<Task> listOfText) throws NedException {
         String[] parsed_inputs = input.split("todo", 2);
         if (parsed_inputs[1].strip().isBlank()) {
             throw new NedException("M'lord, you cannot create a todo task with no description");
         };
-        return new ToDo(parsed_inputs[1].strip());
+        Task newTask = new ToDo(parsed_inputs[1].strip());
+        listOfText.add(newTask);
+        Ned.print("Aye, I've added this task m'lord:");
+        Ned.print(Ned.indentations + newTask);
     };
-}
+};

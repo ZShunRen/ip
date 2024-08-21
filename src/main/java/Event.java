@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class Event extends Task {
@@ -20,7 +21,7 @@ public class Event extends Task {
     public String toString() {
         return String.format("%s (from: %s to: %s)", super.toString(),this.fromTiming, this.toTiming);
     };
-    public static Task createTask(String input) throws NedException {
+    public static void addTask(String input, ArrayList<Task> listOfText) throws NedException {
         String[] parsed_inputs = input.split("event|/from|/to", 4);
         int parsed_inputs_len = Task.checkSizeOfInput(parsed_inputs);
         if (parsed_inputs[1].strip().isBlank()) {
@@ -37,6 +38,9 @@ public class Event extends Task {
                         "or no 'to' date. Gods be good, fill both up!");
             }
         }
-        return new Event(parsed_inputs[1].strip(), parsed_inputs[2].strip(), parsed_inputs[3].strip());
+        Task newTask = new Event(parsed_inputs[1].strip(), parsed_inputs[2].strip(), parsed_inputs[3].strip());
+        listOfText.add(newTask);
+        Ned.print("Aye, I've added this task m'lord:");
+        Ned.print(Ned.indentations + newTask);
     };
 };

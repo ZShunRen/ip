@@ -18,6 +18,9 @@ public class CommandManager {
     private static final String ByeFlag = "bye";
     private final ArrayList<Task> listOfText;
 
+    private enum CommandTypes {
+        MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, LIST, BYE, UNKNOWN
+    };
     public final static String commandMessage = """
             Usage: 
                 list                             - Shows the list of all tasks 
@@ -31,72 +34,56 @@ public class CommandManager {
         this.listOfText = listOfText;
     };
 
-    public void checkForCommands (String input, FlagWrapper flag) {
-        //checks whether the input fits into all existing command types known
-        if (!(checkForMarkCommands(input) || checkForTaskCommands(input) || checkForListCommand(input) || checkForByeCommand(input, flag) || checkForDeleteCommand(input))) {
-            Ned.print("M'lord, you seem to have given me a nonsensical command. Input a correct command, for we have little time!");
-            Ned.print("Winter is coming...");
-        };
-    }
-    private boolean checkForMarkCommands(String input) {
-        //will check if command is mark or unmark and execute accordingly
-        if (isMarkCommand(input)) {
-            new MarkAndUnmarkCommand(true).executeMarkCommand(input, this.listOfText);
-        } else if (isUnmarkCommand(input)){
-            new MarkAndUnmarkCommand(false).executeMarkCommand(input, this.listOfText);
-        } else {
-            return false;
-        }
-        return true;
-    };
-
-    private boolean checkForTaskCommands(String input) {
-        Task newTask;
+    public void processCommand(String input, FlagWrapper flag) {
+        CommandTypes command = checkForCommands(input);
         try {
-            if (isTodoTask(input)) {
-                newTask = ToDo.createTask(input);
-            } else if (isDeadlineTask(input)) {
-                newTask = Deadline.createTask(input);
-            } else if (isEventTask(input)) {
-                newTask = Event.createTask(input);
-            } else {
-                return false;
-            }
+            switch (command) {
+                case MARK:
+                    new MarkAndUnmarkCommand(true).executeMarkCommand(input, this.listOfText);
+                    break;
+                case UNMARK:
+                    new MarkAndUnmarkCommand(false).executeMarkCommand(input, this.listOfText);
+                    break;
+                case TODO:
+                    ToDo.addTask(input, this.listOfText);
+                    break;
+                case DEADLINE:
+                    Deadline.addTask(input, this.listOfText);
+                    break;
+                case EVENT:
+                    Event.addTask(input, this.listOfText);
+                    break;
+                case DELETE:
+                    new DeleteCommand(input).executeDeleteCommand(this.listOfText);
+                    break;
+                case LIST:
+                    new ListCommand().executeListCommand(this.listOfText);
+                    break;
+                case BYE:
+                    flag.setStatus(false);
+                    break;
+                case UNKNOWN:
+                default:
+                    throw new NedException("M'lord, you seem to have given me a nonsensical command." +
+                            " Input a correct command, for we have little time! Winter is coming....");
+            };
         } catch (NedException e) {
             Ned.print(e.getMessage());
             Ned.print(CommandManager.commandMessage);
-            return true;
         };
-        this.listOfText.add(newTask);
-        Ned.print("Aye, I've added this task m'lord:");
-        Ned.print(Ned.indentations  + newTask);
-        return true;
     };
-
-    private boolean checkForByeCommand(String input, FlagWrapper flag) {
-        if (isByeCommand(input)) {
-            flag.setStatus(false);
-            return true;
-        };
-        return false;
+    private CommandTypes checkForCommands (String input) {
+        //checks whether the input fits into all existing command types known
+        if (isMarkCommand(input)) return CommandTypes.MARK;
+        if (isUnmarkCommand(input)) return CommandTypes.UNMARK;
+        if (isListCommand(input)) return CommandTypes.LIST;
+        if (isByeCommand(input)) return CommandTypes.BYE;
+        if (isDeleteCommand(input)) return CommandTypes.DELETE;
+        if (isTodoTask(input)) return CommandTypes.TODO;
+        if (isDeadlineTask(input)) return CommandTypes.DEADLINE;
+        if (isEventTask(input)) return CommandTypes.EVENT;
+        else return CommandTypes.UNKNOWN;
     };
-
-    private boolean checkForListCommand(String input) {
-        if (isListCommand(input)) {
-            new ListCommand().executeListCommand(this.listOfText);
-            return true;
-        };
-        return false;
-    };
-
-    private boolean checkForDeleteCommand(String input) {
-        if (isDeleteCommand(input)) {
-            new DeleteCommand(input).executeDeleteCommand(this.listOfText);
-            return true;
-        };
-        return false;
-    };
-
     private boolean isListCommand(String input) {
         return input.equalsIgnoreCase(CommandManager.ListFlag);
     };

@@ -40,7 +40,7 @@ public class Ned {
         FlagWrapper flag = new FlagWrapper(true);
         while (flag.getStatus()) {
             String nextInput = inputDetector.nextLine();
-            commandParser.checkForCommands(nextInput, flag);
+            commandParser.processCommand(nextInput, flag);
         }
     };
 };
