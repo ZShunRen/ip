@@ -9,18 +9,6 @@ public abstract class Task {
         this.isDone = false;
     };
 
-    public static Task createTask(String taskDescription) {
-        return new ToDo(taskDescription);
-    };
-
-    public static Task createTask(String taskDescription, String deadlineTiming) {
-        return new Deadline(taskDescription, deadlineTiming);
-    };
-
-    public static Task createTask(String taskDescription, String fromTiming, String toTiming) {
-        return new Event(taskDescription, fromTiming, toTiming);
-    };
-
     public void markAsDone() {
         this.isDone = true;
     };
@@ -29,6 +17,16 @@ public abstract class Task {
         this.isDone = false;
     };
 
+    protected static int checkSizeOfInput(String[] strArr) {
+        int count = 0;
+        for (String s : strArr) {
+            if (!s.isBlank())  {
+                count += 1;
+            }
+        }
+        ;
+        return count;
+    };
     @Override
     public String toString() {
         String marker = this.isDone ? "X" : " ";
