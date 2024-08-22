@@ -15,12 +15,13 @@ public class Event extends Task {
         this.fromTiming = fromTiming;
         this.toTiming = toTiming;
         this.taskType = "E";
-    };
+    }
 
     @Override
     public String toString() {
-        return String.format("%s (from: %s to: %s)", super.toString(),this.fromTiming, this.toTiming);
-    };
+        return String.format("%s (from: %s to: %s)", super.toString(), this.fromTiming, this.toTiming);
+    }
+
     public static void addTask(String input, ArrayList<Task> listOfText) throws NedException {
         String[] parsed_inputs = input.split("event|/from|/to", 4);
         int parsed_inputs_len = Task.checkSizeOfInput(parsed_inputs);
@@ -29,10 +30,10 @@ public class Event extends Task {
         } else if (parsed_inputs_len <= 2) {
             if (Pattern.matches(EventRegexWithoutTo, input) || Pattern.matches(EventRegexWithEmptyTo, input)) {
                 throw new NedException("M'lord, you cannot create an event task with no 'to' date."
-                        + "Gods be good, fill both up!");
+                        + " Gods be good, fill both up!");
             } else if (Pattern.matches(EventRegexWithoutFrom, input) || Pattern.matches(EventRegexWithEmptyFrom, input)) {
                 throw new NedException("M'lord, you cannot create an event task with no 'from' date."
-                        + "Gods be good, fill both up!");
+                        + " Gods be good, fill both up!");
             } else {
                 throw new NedException("M'lord, you cannot create an event task with no 'from' date " +
                         "or no 'to' date. Gods be good, fill both up!");
@@ -41,6 +42,6 @@ public class Event extends Task {
         Task newTask = new Event(parsed_inputs[1].strip(), parsed_inputs[2].strip(), parsed_inputs[3].strip());
         listOfText.add(newTask);
         Ned.print("Aye, I've added this task m'lord:");
-        Ned.print(Ned.indentations + newTask);
-    };
-};
+        Ned.print(Ned.INDENTATIONS + newTask);
+    }
+}
