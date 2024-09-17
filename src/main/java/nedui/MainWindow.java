@@ -5,14 +5,11 @@ import java.util.Objects;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import ned.Ned;
@@ -36,7 +33,7 @@ public class MainWindow extends AnchorPane {
     private Image nedImage = new Image(Objects.requireNonNull(
             this.getClass().getResourceAsStream("/images/Eddard.png")));
 
-
+    /** Sets up the scroll pane and prompt text in the user input */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());

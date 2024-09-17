@@ -1,13 +1,13 @@
 package nedui;
+
 import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-
+import javafx.stage.Stage;
 import ned.Ned;
 
 /**
